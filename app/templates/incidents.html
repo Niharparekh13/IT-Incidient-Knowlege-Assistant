@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Incidents{% endblock %}
+
+{% block content %}
+<section class="page-title">
+    <p class="eyebrow">Saved Records</p>
+    <h1>Submitted incidents</h1>
+</section>
+
+<section class="table-panel">
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Issue</th>
+                <th>Category</th>
+                <th>Matched solution</th>
+                <th>Status</th>
+                <th>Created</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for incident in incidents %}
+                <tr>
+                    <td>{{ incident.id }}</td>
+                    <td>{{ incident.user_issue }}</td>
+                    <td>{{ incident.category_name or "Unassigned" }}</td>
+                    <td>{{ incident.matched_title or "No match" }}</td>
+                    <td>{{ incident.status }}</td>
+                    <td>{{ incident.created_at }}</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="6">No incidents saved yet.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}

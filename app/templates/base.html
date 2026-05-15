@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}IT Incident Knowledge Assistant{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header class="app-header">
+        <a class="brand" href="{{ url_for('main.index') }}">IT Incident Knowledge Assistant</a>
+        <nav aria-label="Primary navigation">
+            <a href="{{ url_for('main.index') }}">Search</a>
+            <a href="{{ url_for('main.incidents') }}">Incidents</a>
+            <a href="{{ url_for('main.new_knowledge') }}">Add Knowledge</a>
+        </nav>
+    </header>
+
+    <main class="shell">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <section class="flash-list" aria-label="Messages">
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                </section>
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

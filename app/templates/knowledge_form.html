@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Add Knowledge{% endblock %}
+
+{% block content %}
+<section class="workspace single-column">
+    <div class="panel">
+        <p class="eyebrow">Team Entry</p>
+        <h1>Add a knowledge base solution</h1>
+
+        <form class="search-form" action="{{ url_for('main.new_knowledge') }}" method="post">
+            <label for="category_id">Category</label>
+            <select id="category_id" name="category_id" required>
+                <option value="">Select category</option>
+                {% for category in categories %}
+                    <option value="{{ category.id }}">{{ category.name }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="title">Title</label>
+            <input id="title" name="title" type="text" required>
+
+            <label for="symptoms">Symptoms and keywords</label>
+            <textarea id="symptoms" name="symptoms" rows="4" required></textarea>
+
+            <label for="resolution_steps">Resolution steps</label>
+            <textarea id="resolution_steps" name="resolution_steps" rows="6" required></textarea>
+
+            <label class="checkbox-row" for="escalation_required">
+                <input id="escalation_required" name="escalation_required" type="checkbox">
+                Escalation may be required
+            </label>
+
+            <button type="submit">Add Solution</button>
+        </form>
+    </div>
+</section>
+{% endblock %}
