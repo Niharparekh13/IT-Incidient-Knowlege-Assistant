@@ -5,7 +5,7 @@
 {% block content %}
 <section class="workspace">
     <div class="panel issue-panel">
-        <p class="eyebrow">Week 2 Flask Prototype</p>
+        <p class="eyebrow">Week 3 Working Flow</p>
         <h1>Find troubleshooting steps for an IT issue</h1>
 
         <form class="search-form" action="{{ url_for('main.search') }}" method="post">
@@ -22,6 +22,10 @@
 
             <button type="submit">Search Knowledge Base</button>
         </form>
+        <div class="button-row">
+            <a class="button-link secondary-link" href="{{ url_for('main.new_incident') }}">Create Incident Manually</a>
+            <a class="button-link secondary-link" href="{{ url_for('main.knowledge') }}">Manage Knowledge Base</a>
+        </div>
     </div>
 
     <aside class="panel">

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}{% if incident %}Edit Incident{% else %}Create Incident{% endif %}{% endblock %}
+
+{% block content %}
+<section class="workspace single-column">
+    <div class="panel">
+        <p class="eyebrow">Incident CRUD</p>
+        <h1>{% if incident %}Edit incident{% else %}Create incident{% endif %}</h1>
+
+        <form class="search-form" action="{{ form_action }}" method="post">
+            <label for="issue">User issue</label>
+            <textarea id="issue" name="issue" rows="5" required>{{ incident.user_issue if incident else '' }}</textarea>
+
+            <label for="category_id">Category</label>
+            <select id="category_id" name="category_id">
+                <option value="">Unassigned</option>
+                {% for category in categories %}
+                    <option value="{{ category.id }}" {% if incident and incident.category_id == category.id %}selected{% endif %}>{{ category.name }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="matched_kb_id">Matched knowledge base solution</label>
+            <select id="matched_kb_id" name="matched_kb_id">
+                <option value="">No matched solution</option>
+                {% for entry in knowledge_entries %}
+                    <option value="{{ entry.id }}" {% if incident and incident.matched_kb_id == entry.id %}selected{% endif %}>{{ entry.category_name }} - {{ entry.title }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="status">Status</label>
+            <select id="status" name="status">
+                {% for status in statuses %}
+                    <option value="{{ status }}" {% if incident and incident.status == status %}selected{% endif %}>{{ status.replace("_", " ") }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="notes">Notes</label>
+            <textarea id="notes" name="notes" rows="4">{{ incident.notes if incident else '' }}</textarea>
+
+            <div class="button-row">
+                <button type="submit">{{ submit_label }}</button>
+                <a class="button-link secondary-link" href="{{ url_for('main.incidents') }}">Cancel</a>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}

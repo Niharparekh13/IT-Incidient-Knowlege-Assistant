@@ -1,13 +1,23 @@
 # IT Incident Knowledge Assistant
 
-Week 2 project skeleton for a Flask and SQLite web application.
+Week 3 Flask and SQLite prototype for an IT incident troubleshooting application.
 
-## Week 2 Goals
+## Completed Milestones
+
+### Week 2
 
 - Set up a Flask application with organized routes, templates, and static files.
-- Create a SQLite database schema for incident categories, knowledge base solutions, and user-submitted incidents.
-- Seed the database with sample IT troubleshooting data.
-- Show a basic working flow where a user enters an issue and the app returns possible fixes from the knowledge base.
+- Created a SQLite database schema for incident categories, knowledge base solutions, and user-submitted incidents.
+- Seeded the database with sample IT troubleshooting data.
+- Built a basic flow where a user enters an issue and the app returns possible fixes from the knowledge base.
+
+### Week 3
+
+- Added core CRUD for knowledge base solutions.
+- Added core CRUD for user-submitted incidents.
+- Added manual incident creation, incident editing, status updates, and delete actions.
+- Added a knowledge base management page with edit and delete controls.
+- Improved the working user flow from issue search to saved incident to incident status update.
 
 ## Project Structure
 
@@ -23,6 +33,8 @@ app/
     index.html
     results.html
     incidents.html
+    incident_form.html
+    knowledge.html
     knowledge_form.html
 schema.sql
 seed.sql
@@ -63,23 +75,20 @@ Open the local URL shown in the terminal, usually:
 http://127.0.0.1:5000
 ```
 
-## Demo Flow
+## Week 3 Demo Flow
 
 1. Open the home page.
 2. Type an issue such as `wifi not connecting` or `account locked`.
 3. Submit the issue and show matching troubleshooting steps.
-4. Open the incidents page to show stored user-submitted incidents.
-5. Open the add knowledge page to show how the team can add future solutions.
+4. Save one matching result as an incident.
+5. Open the incidents page and edit the saved incident status, notes, or matched solution.
+6. Create a manual incident from the New Incident page.
+7. Open the Knowledge Base page, add a new solution, edit it, and delete it if needed.
 
-## GitHub Setup Later
+## GitHub
 
-After the local project works, create a GitHub repository and push these files:
+Repository:
 
-```powershell
-git init
-git add .
-git commit -m "Add week 2 Flask project skeleton"
-git branch -M main
-git remote add origin YOUR_GITHUB_REPO_URL
-git push -u origin main
+```text
+https://github.com/Niharparekh13/IT-Incidient-Knowlege-Assistant
 ```

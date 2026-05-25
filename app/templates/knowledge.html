@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Knowledge Base{% endblock %}
+
+{% block content %}
+<section class="page-title">
+    <p class="eyebrow">CRUD Management</p>
+    <h1>Knowledge base entries</h1>
+    <div class="button-row">
+        <a class="button-link" href="{{ url_for('main.new_knowledge') }}">Add Knowledge</a>
+    </div>
+</section>
+
+<section class="crud-grid">
+    {% for entry in entries %}
+        <article class="solution-card">
+            <span>{{ entry.category_name }}</span>
+            <h2>{{ entry.title }}</h2>
+            <p><strong>Symptoms:</strong> {{ entry.symptoms }}</p>
+            <p><strong>Resolution:</strong> {{ entry.resolution_steps }}</p>
+            {% if entry.escalation_required %}
+                <p class="status-pill">Escalation may be needed</p>
+            {% endif %}
+            <p class="muted-text">Linked incidents: {{ entry.incident_count }}</p>
+            <div class="button-row">
+                <a class="button-link secondary-link" href="{{ url_for('main.edit_knowledge', entry_id=entry.id) }}">Edit</a>
+                <form action="{{ url_for('main.delete_knowledge', entry_id=entry.id) }}" method="post" onsubmit="return confirm('Delete this knowledge base entry?');">
+                    <button class="danger-button" type="submit">Delete</button>
+                </form>
+            </div>
+        </article>
+    {% else %}
+        <section class="panel empty-state">
+            <h2>No knowledge entries yet</h2>
+            <a class="button-link" href="{{ url_for('main.new_knowledge') }}">Add First Entry</a>
+        </section>
+    {% endfor %}
+</section>
+{% endblock %}

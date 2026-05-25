@@ -170,10 +170,76 @@ button:focus {
     background: var(--accent-dark);
 }
 
+.button-row {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.button-link {
+    align-items: center;
+    background: var(--accent);
+    border-radius: 6px;
+    color: #ffffff;
+    display: inline-flex;
+    font-weight: 700;
+    min-height: 44px;
+    padding: 10px 14px;
+}
+
+.button-link:hover,
+.button-link:focus {
+    background: var(--accent-dark);
+}
+
+.secondary-link {
+    background: #eef3f6;
+    color: var(--ink);
+}
+
+.secondary-link:hover,
+.secondary-link:focus {
+    background: #dde7ec;
+}
+
+.danger-button {
+    background: #b42318;
+}
+
+.danger-button:hover,
+.danger-button:focus {
+    background: #8f1d15;
+}
+
+.compact-button {
+    font-size: 13px;
+    min-height: 34px;
+    padding: 6px 10px;
+}
+
+.text-link {
+    color: var(--accent-dark);
+    font-weight: 700;
+}
+
+.text-link:hover,
+.text-link:focus {
+    text-decoration: underline;
+}
+
 .solution-list,
 .result-grid {
     display: grid;
     gap: 16px;
+}
+
+.crud-grid {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    margin-top: 24px;
 }
 
 .result-grid {
@@ -210,6 +276,15 @@ button:focus {
     padding: 4px 10px;
 }
 
+.table-status {
+    white-space: nowrap;
+}
+
+.muted-text {
+    color: var(--muted);
+    font-size: 14px;
+}
+
 .empty-state {
     margin-top: 24px;
 }
@@ -234,7 +309,7 @@ button:focus {
 
 table {
     border-collapse: collapse;
-    min-width: 760px;
+    min-width: 980px;
     width: 100%;
 }
 
@@ -249,6 +324,16 @@ td {
 th {
     color: var(--muted);
     font-size: 13px;
+}
+
+.table-actions {
+    align-items: center;
+    display: flex;
+    gap: 10px;
+}
+
+.table-actions form {
+    margin: 0;
 }
 
 .checkbox-row {

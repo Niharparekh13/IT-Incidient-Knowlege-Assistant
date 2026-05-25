@@ -6,32 +6,35 @@
 <section class="workspace single-column">
     <div class="panel">
         <p class="eyebrow">Team Entry</p>
-        <h1>Add a knowledge base solution</h1>
+        <h1>{% if entry %}Edit knowledge base solution{% else %}Add a knowledge base solution{% endif %}</h1>
 
-        <form class="search-form" action="{{ url_for('main.new_knowledge') }}" method="post">
+        <form class="search-form" action="{{ form_action }}" method="post">
             <label for="category_id">Category</label>
             <select id="category_id" name="category_id" required>
                 <option value="">Select category</option>
                 {% for category in categories %}
-                    <option value="{{ category.id }}">{{ category.name }}</option>
+                    <option value="{{ category.id }}" {% if entry and entry.category_id == category.id %}selected{% endif %}>{{ category.name }}</option>
                 {% endfor %}
             </select>
 
             <label for="title">Title</label>
-            <input id="title" name="title" type="text" required>
+            <input id="title" name="title" type="text" value="{{ entry.title if entry else '' }}" required>
 
             <label for="symptoms">Symptoms and keywords</label>
-            <textarea id="symptoms" name="symptoms" rows="4" required></textarea>
+            <textarea id="symptoms" name="symptoms" rows="4" required>{{ entry.symptoms if entry else '' }}</textarea>
 
             <label for="resolution_steps">Resolution steps</label>
-            <textarea id="resolution_steps" name="resolution_steps" rows="6" required></textarea>
+            <textarea id="resolution_steps" name="resolution_steps" rows="6" required>{{ entry.resolution_steps if entry else '' }}</textarea>
 
             <label class="checkbox-row" for="escalation_required">
-                <input id="escalation_required" name="escalation_required" type="checkbox">
+                <input id="escalation_required" name="escalation_required" type="checkbox" {% if entry and entry.escalation_required %}checked{% endif %}>
                 Escalation may be required
             </label>
 
-            <button type="submit">Add Solution</button>
+            <div class="button-row">
+                <button type="submit">{{ submit_label }}</button>
+                <a class="button-link secondary-link" href="{{ url_for('main.knowledge') }}">Cancel</a>
+            </div>
         </form>
     </div>
 </section>
