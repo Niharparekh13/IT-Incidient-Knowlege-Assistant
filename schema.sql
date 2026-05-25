@@ -1,52 +1,54 @@
-DROP TABLE IF EXISTS categories;
-DROP TABLE IF EXISTS knowledge_base;
-DROP TABLE IF EXISTS incidents;
 DROP TABLE IF EXISTS ai_recommendations;
 DROP TABLE IF EXISTS feedback;
+DROP TABLE IF EXISTS incidents;
+DROP TABLE IF EXISTS knowledge_base;
+DROP TABLE IF EXISTS categories;
 
 CREATE TABLE categories (
-    category_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    category_name TEXT NOT NULL,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL UNIQUE,
     description TEXT
 );
 
 CREATE TABLE knowledge_base (
-    solution_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    category_id INTEGER,
-    issue_title TEXT NOT NULL,
-    issue_description TEXT NOT NULL,
-    troubleshooting_steps TEXT NOT NULL,
-    priority_level TEXT,
-    keywords TEXT,
-    FOREIGN KEY (category_id) REFERENCES categories(category_id)
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    category_id INTEGER NOT NULL,
+    title TEXT NOT NULL,
+    symptoms TEXT NOT NULL,
+    resolution_steps TEXT NOT NULL,
+    escalation_required INTEGER NOT NULL DEFAULT 0,
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (category_id) REFERENCES categories (id)
 );
 
 CREATE TABLE incidents (
-    incident_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_name TEXT,
-    user_issue TEXT NOT NULL,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     category_id INTEGER,
-    status TEXT DEFAULT 'Open',
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (category_id) REFERENCES categories(category_id)
+    user_issue TEXT NOT NULL,
+    matched_kb_id INTEGER,
+    status TEXT NOT NULL DEFAULT 'new',
+    notes TEXT,
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (category_id) REFERENCES categories (id),
+    FOREIGN KEY (matched_kb_id) REFERENCES knowledge_base (id)
 );
 
 CREATE TABLE ai_recommendations (
     recommendation_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    incident_id INTEGER,
-    solution_id INTEGER,
+    incident_id INTEGER NOT NULL,
+    knowledge_base_id INTEGER,
     confidence_score REAL,
-    recommended_text TEXT,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (incident_id) REFERENCES incidents(incident_id),
-    FOREIGN KEY (solution_id) REFERENCES knowledge_base(solution_id)
+    recommended_text TEXT NOT NULL,
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (incident_id) REFERENCES incidents (id),
+    FOREIGN KEY (knowledge_base_id) REFERENCES knowledge_base (id)
 );
 
 CREATE TABLE feedback (
     feedback_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    incident_id INTEGER,
-    is_helpful TEXT,
+    incident_id INTEGER NOT NULL,
+    is_helpful INTEGER,
     comments TEXT,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (incident_id) REFERENCES incidents(incident_id)
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (incident_id) REFERENCES incidents (id)
 );
