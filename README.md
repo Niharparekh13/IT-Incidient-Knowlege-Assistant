@@ -43,21 +43,29 @@ Final Flask and SQLite prototype for an IT incident troubleshooting application.
 ```text
 app/
   __init__.py
-  ai_agent.py
+  controllers/
+    main_controller.py
   db.py
-  routes.py
-  static/
-    styles.css
-  templates/
-    base.html
-    index.html
-    results.html
-    incidents.html
-    incident_detail.html
-    incident_form.html
-    ai_dashboard.html
-    knowledge.html
-    knowledge_form.html
+  models/
+    ai_model.py
+    incident_model.py
+    knowledge_model.py
+  services/
+    ai_agent.py
+    ollama_client.py
+  views/
+    static/
+      styles.css
+    templates/
+      base.html
+      index.html
+      results.html
+      incidents.html
+      incident_detail.html
+      incident_form.html
+      ai_dashboard.html
+      knowledge.html
+      knowledge_form.html
 docs/
   final_report.md
   presentation_notes.md
@@ -69,6 +77,13 @@ seed.sql
 init_db.py
 requirements.txt
 ```
+
+The app now follows an MVC-style Flask structure:
+
+- Models: database queries and CRUD logic in `app/models/`
+- Views: HTML templates and CSS in `app/views/`
+- Controllers: Flask routes and request handling in `app/controllers/`
+- Services: AI recommendation and Ollama integration in `app/services/`
 
 ## Local Setup
 

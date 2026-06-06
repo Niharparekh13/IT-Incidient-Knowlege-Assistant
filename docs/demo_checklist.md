@@ -22,19 +22,22 @@ http://127.0.0.1:5000/
 1. Show GitHub repository link.
 2. Show project structure in VS Code.
 3. Open `schema.sql` and explain the five tables.
-4. Open `app/ai_agent.py` and explain AI agent v1.
-5. Open `app/ollama_client.py` and explain optional Ollama/Llama integration.
-6. Open the running app.
-7. Search `wifi not connecting`.
-8. Point out AI provider, confidence score, matched terms, and escalation note.
-9. Save the recommendation as an incident.
-10. Open Incidents and then Details.
-11. Add feedback as Helpful.
-12. Open AI Activity dashboard.
-13. Edit the incident status to Resolved.
-14. Open Knowledge Base.
-15. Add or edit one knowledge base solution.
-16. Mention tests passed with `python -m unittest discover -s tests`.
+4. Open `app/controllers/main_controller.py` and explain Flask routes.
+5. Open `app/models/` and explain that database CRUD logic lives there.
+6. Open `app/views/templates/` and explain these are the HTML views.
+7. Open `app/services/ai_agent.py` and explain AI agent v1.
+8. Open `app/services/ollama_client.py` and explain optional Ollama/Llama integration.
+9. Open the running app.
+10. Search `wifi not connecting`.
+11. Point out AI provider, confidence score, matched terms, and escalation note.
+12. Save the recommendation as an incident.
+13. Open Incidents and then Details.
+14. Add feedback as Helpful.
+15. Open AI Activity dashboard.
+16. Edit the incident status to Resolved.
+17. Open Knowledge Base.
+18. Add or edit one knowledge base solution.
+19. Mention tests passed with `python -m unittest discover -s tests`.
 
 ## Optional Ollama Demo
 

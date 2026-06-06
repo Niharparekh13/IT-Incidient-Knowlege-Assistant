@@ -5,9 +5,9 @@ import os
 from pathlib import Path
 
 from app import create_app
-from app.ai_agent import recommend_solutions
 from app.db import get_db
-from app.ollama_client import build_prompt
+from app.services.ai_agent import recommend_solutions
+from app.services.ollama_client import build_prompt
 
 
 class IncidentAssistantTestCase(unittest.TestCase):

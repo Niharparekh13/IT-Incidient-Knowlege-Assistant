@@ -77,6 +77,15 @@ SQLite Database
     +--> feedback
 ```
 
+## MVC Project Organization
+
+The final Flask code is organized using an MVC-style structure:
+
+- Models in `app/models/`: database query and CRUD logic
+- Views in `app/views/`: HTML templates and CSS
+- Controllers in `app/controllers/`: Flask routes and request handling
+- Services in `app/services/`: AI agent and Ollama integration
+
 ## Weekly Completion
 
 Week 1: Proposal, architecture, technology plan, scope, and task breakdown were completed.

@@ -28,6 +28,13 @@ Our app gives users a web interface where they can enter an IT issue and receive
 
 Browser -> Flask routes -> AI agent v1 -> SQLite database -> templates and results
 
+The code is organized in an MVC-style structure:
+
+- Models: database CRUD logic
+- Views: templates and CSS
+- Controllers: Flask routes
+- Services: AI and Ollama logic
+
 Main database tables:
 
 - categories
