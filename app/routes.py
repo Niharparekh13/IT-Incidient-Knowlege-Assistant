@@ -1,6 +1,6 @@
 from flask import Blueprint, abort, flash, redirect, render_template, request, url_for
 
-from .ai_agent import build_escalation_message, recommend_solutions
+from .ai_agent import build_escalation_message, build_general_ai_guidance, recommend_solutions
 from .db import get_db
 
 bp = Blueprint("main", __name__)
@@ -61,6 +61,9 @@ def search():
     categories = get_categories(db)
     matches = recommend_solutions(db, issue, category_id)
     escalation_message = build_escalation_message(issue, bool(matches))
+    general_guidance = None
+    if not matches:
+        general_guidance = build_general_ai_guidance(issue)
 
     return render_template(
         "results.html",
@@ -69,6 +72,7 @@ def search():
         categories=categories,
         matches=matches,
         escalation_message=escalation_message,
+        general_guidance=general_guidance,
     )
 
 

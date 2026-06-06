@@ -488,6 +488,14 @@ button:focus {
     margin-top: 24px;
 }
 
+.guidance-card {
+    max-width: 900px;
+}
+
+.guidance-card form {
+    margin-top: 18px;
+}
+
 .empty-table {
     align-items: center;
     display: flex;

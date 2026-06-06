@@ -154,6 +154,8 @@ $env:OLLAMA_ENABLED="0"
 9. Edit the saved incident status, notes, or matched solution.
 10. Open the Knowledge Base page, add a new solution, edit it, and delete it if needed.
 
+For issues that do not match the knowledge base, such as a very specific webcam problem, the app shows general Ollama guidance and still lets the user save the issue as an incident for team review.
+
 ## Final Documentation
 
 - `docs/final_report.md`

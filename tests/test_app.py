@@ -97,6 +97,26 @@ class IncidentAssistantTestCase(unittest.TestCase):
         self.assertEqual(feedback_response.status_code, 200)
         self.assertEqual(self.fetch_one("SELECT COUNT(*) FROM feedback")[0], 1)
 
+    def test_unknown_issue_gets_general_guidance(self):
+        response = self.client.post(
+            "/search",
+            data={"issue": "webcam image is purple"},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b"General AI Guidance", response.data)
+        self.assertIn(b"Local fallback guidance", response.data)
+
+    def test_bluetooth_issue_gets_specific_knowledge_match(self):
+        response = self.client.post(
+            "/search",
+            data={"issue": "bluetooth not working"},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b"Bluetooth device not connecting", response.data)
+        self.assertIn(b"Best match", response.data)
+
     def test_knowledge_crud_flow(self):
         create_response = self.client.post(
             "/knowledge/new",

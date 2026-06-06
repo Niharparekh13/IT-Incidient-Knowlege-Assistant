@@ -1,6 +1,6 @@
 import re
 
-from .ollama_client import enhance_recommendation, get_settings
+from .ollama_client import enhance_recommendation, generate_general_guidance, get_settings
 
 
 STOP_WORDS = {
@@ -22,8 +22,11 @@ STOP_WORDS = {
     "of",
     "on",
     "or",
+    "problem",
+    "issue",
     "the",
     "to",
+    "working",
     "with",
 }
 
@@ -122,6 +125,9 @@ def recommend_solutions(db, issue, category_id=None, limit=5):
             continue
 
         confidence = confidence_from_score(score, len(issue_tokens))
+        if confidence < 0.4:
+            continue
+
         recommendation = dict(entry)
         recommendation["confidence_score"] = confidence
         recommendation["confidence_percent"] = int(round(confidence * 100))
@@ -172,6 +178,27 @@ def build_escalation_message(issue, has_matches):
     if not has_matches:
         return "No strong knowledge base match was found, so the issue should be saved for team review."
     return "Review the suggested steps first, then escalate if the issue continues."
+
+
+def build_general_ai_guidance(issue):
+    llm_response = generate_general_guidance(issue)
+    if llm_response:
+        return {
+            "provider": llm_response["provider"],
+            "text": llm_response["text"],
+            "saved_text": f"{llm_response['provider']}: {llm_response['text']}",
+        }
+
+    text = (
+        "No matching knowledge base solution was found. Try basic troubleshooting: "
+        "restart the device, check related settings or cables, confirm the device is updated, "
+        "test with another app or device if possible, and save an incident if the issue continues."
+    )
+    return {
+        "provider": "Local fallback guidance",
+        "text": text,
+        "saved_text": f"Local fallback guidance: {text}",
+    }
 
 
 def fetch_knowledge_entries(db, category_id=None):

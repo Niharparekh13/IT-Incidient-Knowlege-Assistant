@@ -55,6 +55,49 @@ def enhance_recommendation(issue, entry):
     }
 
 
+def generate_general_guidance(issue):
+    """Ask Ollama for general troubleshooting guidance when no KB match exists."""
+    if not is_enabled():
+        return None
+
+    settings = get_settings()
+    if not is_service_available(settings["base_url"]):
+        return None
+
+    payload = {
+        "model": settings["model"],
+        "prompt": build_general_prompt(issue),
+        "stream": False,
+        "options": {
+            "temperature": 0.2,
+            "num_predict": 150,
+        },
+    }
+
+    request = urllib.request.Request(
+        f"{settings['base_url']}/api/generate",
+        data=json.dumps(payload).encode("utf-8"),
+        headers={"Content-Type": "application/json"},
+        method="POST",
+    )
+
+    try:
+        with urllib.request.urlopen(request, timeout=settings["timeout"]) as response:
+            data = json.loads(response.read().decode("utf-8"))
+    except (OSError, urllib.error.URLError, TimeoutError, json.JSONDecodeError):
+        return None
+
+    text = (data.get("response") or "").strip()
+    if not text:
+        return None
+
+    return {
+        "model": settings["model"],
+        "provider": f"Ollama ({settings['model']})",
+        "text": trim_response(text),
+    }
+
+
 def get_settings():
     return {
         "base_url": os.getenv("OLLAMA_BASE_URL", DEFAULT_BASE_URL).rstrip("/"),
@@ -115,6 +158,18 @@ Title: {entry["title"]}
 Symptoms/keywords: {entry["symptoms"]}
 Troubleshooting steps: {entry["resolution_steps"]}
 Escalation rule: {escalation_hint}
+""".strip()
+
+
+def build_general_prompt(issue):
+    return f"""
+You are an IT helpdesk assistant. The knowledge base did not have a strong match.
+Give safe, general troubleshooting guidance for the user's computer issue.
+Use 4 to 6 practical steps. Do not invent private links, phone numbers, company policies, or credentials.
+Tell the user to create an incident if the issue continues, involves hardware failure, or affects multiple users.
+
+User issue:
+{issue}
 """.strip()
 
 

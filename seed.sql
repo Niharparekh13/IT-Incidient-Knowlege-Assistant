@@ -68,4 +68,11 @@ INSERT INTO knowledge_base (category_id, title, symptoms, resolution_steps, esca
     'monitor display screen not detected hdmi usb c docking station hardware',
     'Check cable connections and power. Try a different display input. Reconnect the docking station or adapter, then restart the laptop if the display is still not detected.',
     0
+),
+(
+    5,
+    'Bluetooth device not connecting',
+    'bluetooth not working device pairing headphones mouse keyboard wireless hardware',
+    'Turn Bluetooth off and on again. Confirm the device is charged and in pairing mode. Remove the old pairing record, restart the computer, then pair the device again. If multiple Bluetooth devices fail, save an incident for hardware or driver review.',
+    0
 );
