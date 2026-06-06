@@ -1,5 +1,6 @@
 from flask import Blueprint, abort, flash, redirect, render_template, request, url_for
 
+from .ai_agent import build_escalation_message, recommend_solutions
 from .db import get_db
 
 bp = Blueprint("main", __name__)
@@ -38,7 +39,8 @@ def search():
 
     db = get_db()
     categories = get_categories(db)
-    matches = find_matches(db, issue, category_id)
+    matches = recommend_solutions(db, issue, category_id)
+    escalation_message = build_escalation_message(issue, bool(matches))
 
     return render_template(
         "results.html",
@@ -46,6 +48,7 @@ def search():
         category_id=category_id,
         categories=categories,
         matches=matches,
+        escalation_message=escalation_message,
     )
 
 
@@ -59,6 +62,8 @@ def incidents():
         matched_kb_id = request.form.get("matched_kb_id") or None
         status = request.form.get("status") or "new"
         notes = request.form.get("notes", "").strip()
+        confidence_score = request.form.get("confidence_score") or None
+        recommended_text = request.form.get("recommended_text", "").strip()
 
         if not user_issue:
             flash("Incident details are required.")
@@ -67,7 +72,7 @@ def incidents():
         if status not in INCIDENT_STATUSES:
             status = "new"
 
-        db.execute(
+        cursor = db.execute(
             """
             INSERT INTO incidents (category_id, user_issue, matched_kb_id, status, notes)
             VALUES (?, ?, ?, ?, ?)
@@ -80,6 +85,17 @@ def incidents():
                 notes or "Created from Week 3 user flow.",
             ),
         )
+        incident_id = cursor.lastrowid
+
+        if matched_kb_id or recommended_text:
+            save_ai_recommendation(
+                db,
+                incident_id,
+                matched_kb_id,
+                confidence_score,
+                recommended_text or "AI v1 recommendation created from selected solution.",
+            )
+
         db.commit()
         flash("Incident saved.")
         return redirect(url_for("main.incidents"))
@@ -95,6 +111,61 @@ def incidents():
     ).fetchall()
 
     return render_template("incidents.html", incidents=incident_rows)
+
+
+@bp.route("/incidents/<int:incident_id>")
+def incident_detail(incident_id):
+    db = get_db()
+    incident = get_incident_detail_or_404(db, incident_id)
+    recommendations = db.execute(
+        """
+        SELECT ar.*, kb.title AS knowledge_title
+        FROM ai_recommendations ar
+        LEFT JOIN knowledge_base kb ON kb.id = ar.knowledge_base_id
+        WHERE ar.incident_id = ?
+        ORDER BY ar.created_at DESC
+        """,
+        (incident_id,),
+    ).fetchall()
+    feedback_rows = db.execute(
+        """
+        SELECT *
+        FROM feedback
+        WHERE incident_id = ?
+        ORDER BY created_at DESC
+        """,
+        (incident_id,),
+    ).fetchall()
+
+    return render_template(
+        "incident_detail.html",
+        incident=incident,
+        recommendations=recommendations,
+        feedback_rows=feedback_rows,
+    )
+
+
+@bp.route("/incidents/<int:incident_id>/feedback", methods=["POST"])
+def add_feedback(incident_id):
+    db = get_db()
+    get_incident_or_404(db, incident_id)
+    is_helpful = request.form.get("is_helpful")
+    comments = request.form.get("comments", "").strip()
+
+    if is_helpful not in {"0", "1"}:
+        flash("Choose whether the recommendation was helpful.")
+        return redirect(url_for("main.incident_detail", incident_id=incident_id))
+
+    db.execute(
+        """
+        INSERT INTO feedback (incident_id, is_helpful, comments)
+        VALUES (?, ?, ?)
+        """,
+        (incident_id, int(is_helpful), comments),
+    )
+    db.commit()
+    flash("Feedback saved.")
+    return redirect(url_for("main.incident_detail", incident_id=incident_id))
 
 
 @bp.route("/incidents/new")
@@ -155,6 +226,8 @@ def edit_incident(incident_id):
 def delete_incident(incident_id):
     db = get_db()
     get_incident_or_404(db, incident_id)
+    db.execute("DELETE FROM feedback WHERE incident_id = ?", (incident_id,))
+    db.execute("DELETE FROM ai_recommendations WHERE incident_id = ?", (incident_id,))
     db.execute("DELETE FROM incidents WHERE id = ?", (incident_id,))
     db.commit()
     flash("Incident deleted.")
@@ -277,10 +350,57 @@ def delete_knowledge(entry_id):
     db = get_db()
     get_knowledge_or_404(db, entry_id)
     db.execute("UPDATE incidents SET matched_kb_id = NULL WHERE matched_kb_id = ?", (entry_id,))
+    db.execute(
+        "UPDATE ai_recommendations SET knowledge_base_id = NULL WHERE knowledge_base_id = ?",
+        (entry_id,),
+    )
     db.execute("DELETE FROM knowledge_base WHERE id = ?", (entry_id,))
     db.commit()
     flash("Knowledge base entry deleted.")
     return redirect(url_for("main.knowledge"))
+
+
+@bp.route("/ai")
+def ai_dashboard():
+    db = get_db()
+    summary = db.execute(
+        """
+        SELECT
+            COUNT(*) AS recommendation_count,
+            AVG(confidence_score) AS average_confidence
+        FROM ai_recommendations
+        """
+    ).fetchone()
+    recommendations = db.execute(
+        """
+        SELECT
+            ar.*,
+            i.user_issue,
+            i.status,
+            kb.title AS knowledge_title,
+            c.name AS category_name
+        FROM ai_recommendations ar
+        JOIN incidents i ON i.id = ar.incident_id
+        LEFT JOIN knowledge_base kb ON kb.id = ar.knowledge_base_id
+        LEFT JOIN categories c ON c.id = i.category_id
+        ORDER BY ar.created_at DESC
+        """
+    ).fetchall()
+    feedback_summary = db.execute(
+        """
+        SELECT
+            COUNT(*) AS feedback_count,
+            SUM(CASE WHEN is_helpful = 1 THEN 1 ELSE 0 END) AS helpful_count
+        FROM feedback
+        """
+    ).fetchone()
+
+    return render_template(
+        "ai_dashboard.html",
+        summary=summary,
+        recommendations=recommendations,
+        feedback_summary=feedback_summary,
+    )
 
 
 def get_categories(db):
@@ -310,6 +430,39 @@ def get_incident_or_404(db, incident_id):
     if incident is None:
         abort(404)
     return incident
+
+
+def get_incident_detail_or_404(db, incident_id):
+    incident = db.execute(
+        """
+        SELECT i.*, c.name AS category_name, kb.title AS matched_title,
+            kb.resolution_steps AS matched_steps
+        FROM incidents i
+        LEFT JOIN categories c ON c.id = i.category_id
+        LEFT JOIN knowledge_base kb ON kb.id = i.matched_kb_id
+        WHERE i.id = ?
+        """,
+        (incident_id,),
+    ).fetchone()
+    if incident is None:
+        abort(404)
+    return incident
+
+
+def save_ai_recommendation(db, incident_id, knowledge_base_id, confidence_score, recommended_text):
+    try:
+        confidence = float(confidence_score) if confidence_score else None
+    except ValueError:
+        confidence = None
+
+    db.execute(
+        """
+        INSERT INTO ai_recommendations
+            (incident_id, knowledge_base_id, confidence_score, recommended_text)
+        VALUES (?, ?, ?, ?)
+        """,
+        (incident_id, knowledge_base_id, confidence, recommended_text),
+    )
 
 
 def find_matches(db, issue, category_id=None):

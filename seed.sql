@@ -47,4 +47,25 @@ INSERT INTO knowledge_base (category_id, title, symptoms, resolution_steps, esca
     'email not syncing outlook messages missing mail not updating',
     'Check internet connectivity. Restart Outlook or the mail app. Confirm mailbox storage is not full. Remove and re-add the account if needed. Escalate if mail is missing on webmail too.',
     0
+),
+(
+    1,
+    'MFA code not received',
+    'mfa code not received authentication app text message verification login',
+    'Check the authenticator app and confirm the phone has signal. Try resend code once. If the device was changed or lost, create an incident so IT can reset MFA registration.',
+    1
+),
+(
+    5,
+    'Printer not responding',
+    'printer not responding print job stuck queue offline device hardware',
+    'Confirm the printer is powered on and connected to the network. Clear stuck print jobs, restart the printer, and try printing a test page. Escalate if multiple users are affected.',
+    0
+),
+(
+    5,
+    'External monitor not detected',
+    'monitor display screen not detected hdmi usb c docking station hardware',
+    'Check cable connections and power. Try a different display input. Reconnect the docking station or adapter, then restart the laptop if the display is still not detected.',
+    0
 );

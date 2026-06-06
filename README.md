@@ -1,6 +1,6 @@
 # IT Incident Knowledge Assistant
 
-Week 3 Flask and SQLite prototype for an IT incident troubleshooting application.
+Final Flask and SQLite prototype for an IT incident troubleshooting application.
 
 ## Completed Milestones
 
@@ -19,11 +19,30 @@ Week 3 Flask and SQLite prototype for an IT incident troubleshooting application
 - Added a knowledge base management page with edit and delete controls.
 - Improved the working user flow from issue search to saved incident to incident status update.
 
+### Week 4
+
+- Added AI agent v1 for local recommendation ranking.
+- Added confidence scores, matched terms, and escalation guidance.
+- Stored AI recommendations when incidents are created from search results.
+- Added an AI Activity dashboard.
+
+### Week 5
+
+- Added feedback capture for AI recommendations.
+- Added automated tests using Python `unittest`.
+- Refined incident deletion and knowledge deletion so related AI records stay consistent.
+
+### Week 6
+
+- Added final report, presentation notes, and demo checklist in the `docs/` folder.
+- Prepared a final demo flow covering search, AI, CRUD, feedback, and tests.
+
 ## Project Structure
 
 ```text
 app/
   __init__.py
+  ai_agent.py
   db.py
   routes.py
   static/
@@ -33,9 +52,17 @@ app/
     index.html
     results.html
     incidents.html
+    incident_detail.html
     incident_form.html
+    ai_dashboard.html
     knowledge.html
     knowledge_form.html
+docs/
+  final_report.md
+  presentation_notes.md
+  demo_checklist.md
+tests/
+  test_app.py
 schema.sql
 seed.sql
 init_db.py
@@ -75,15 +102,30 @@ Open the local URL shown in the terminal, usually:
 http://127.0.0.1:5000
 ```
 
-## Week 3 Demo Flow
+Run tests:
+
+```powershell
+python -m unittest discover -s tests
+```
+
+## Final Demo Flow
 
 1. Open the home page.
 2. Type an issue such as `wifi not connecting` or `account locked`.
-3. Submit the issue and show matching troubleshooting steps.
-4. Save one matching result as an incident.
-5. Open the incidents page and edit the saved incident status, notes, or matched solution.
-6. Create a manual incident from the New Incident page.
-7. Open the Knowledge Base page, add a new solution, edit it, and delete it if needed.
+3. Submit the issue and show AI-ranked troubleshooting recommendations.
+4. Point out the confidence score, matched terms, and escalation guidance.
+5. Save one matching result as an incident.
+6. Open the incident details page and show the stored AI recommendation.
+7. Add helpful or not helpful feedback.
+8. Open the AI Activity page.
+9. Edit the saved incident status, notes, or matched solution.
+10. Open the Knowledge Base page, add a new solution, edit it, and delete it if needed.
+
+## Final Documentation
+
+- `docs/final_report.md`
+- `docs/presentation_notes.md`
+- `docs/demo_checklist.md`
 
 ## GitHub
 

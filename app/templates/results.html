@@ -4,8 +4,9 @@
 
 {% block content %}
 <section class="results-header">
-    <p class="eyebrow">Submitted Issue</p>
+    <p class="eyebrow">AI Agent v1</p>
     <h1>{{ issue }}</h1>
+    <p>{{ escalation_message }}</p>
     <div class="button-row">
         <a class="button-link secondary-link" href="{{ url_for('main.index') }}">Search Again</a>
         <a class="button-link secondary-link" href="{{ url_for('main.new_incident') }}">Create Manual Incident</a>
@@ -18,6 +19,14 @@
             <article class="solution-card">
                 <span>{{ match.category_name }}</span>
                 <h2>{{ match.title }}</h2>
+                <div class="confidence-meter" aria-label="AI confidence {{ match.confidence_percent }} percent">
+                    <div style="width: {{ match.confidence_percent }}%;"></div>
+                </div>
+                <p class="confidence-label">AI confidence: {{ match.confidence_percent }}%</p>
+                {% if match.matched_terms %}
+                    <p class="muted-text">Matched terms: {{ match.matched_terms }}</p>
+                {% endif %}
+                <p>{{ match.ai_summary }}</p>
                 <p>{{ match.resolution_steps }}</p>
                 {% if match.escalation_required %}
                     <p class="status-pill">Escalation may be needed</p>
@@ -26,7 +35,9 @@
                     <input type="hidden" name="issue" value="{{ issue }}">
                     <input type="hidden" name="category_id" value="{{ match.category_id }}">
                     <input type="hidden" name="matched_kb_id" value="{{ match.id }}">
-                    <button type="submit">Save Incident</button>
+                    <input type="hidden" name="confidence_score" value="{{ match.confidence_score }}">
+                    <input type="hidden" name="recommended_text" value="{{ match.ai_summary }}">
+                    <button type="submit">Save Incident with AI Recommendation</button>
                 </form>
             </article>
         {% endfor %}
@@ -38,6 +49,7 @@
         <form action="{{ url_for('main.incidents') }}" method="post">
             <input type="hidden" name="issue" value="{{ issue }}">
             <input type="hidden" name="category_id" value="{{ category_id }}">
+            <input type="hidden" name="recommended_text" value="{{ escalation_message }}">
             <button type="submit">Create Incident</button>
         </form>
     </section>

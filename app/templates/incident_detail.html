@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}Incident Details{% endblock %}
+
+{% block content %}
+<section class="page-title">
+    <p class="eyebrow">Incident Details</p>
+    <h1>{{ incident.user_issue }}</h1>
+    <div class="button-row">
+        <a class="button-link secondary-link" href="{{ url_for('main.incidents') }}">Back to Incidents</a>
+        <a class="button-link secondary-link" href="{{ url_for('main.edit_incident', incident_id=incident.id) }}">Edit Incident</a>
+    </div>
+</section>
+
+<section class="detail-grid">
+    <article class="panel">
+        <h2>Incident record</h2>
+        <dl class="detail-list">
+            <dt>Status</dt>
+            <dd><span class="status-pill table-status">{{ incident.status.replace("_", " ") }}</span></dd>
+            <dt>Category</dt>
+            <dd>{{ incident.category_name or "Unassigned" }}</dd>
+            <dt>Matched solution</dt>
+            <dd>{{ incident.matched_title or "No matched solution" }}</dd>
+            <dt>Notes</dt>
+            <dd>{{ incident.notes or "No notes added." }}</dd>
+            <dt>Created</dt>
+            <dd>{{ incident.created_at }}</dd>
+        </dl>
+        {% if incident.matched_steps %}
+            <h3>Recommended troubleshooting steps</h3>
+            <p>{{ incident.matched_steps }}</p>
+        {% endif %}
+    </article>
+
+    <article class="panel">
+        <h2>AI recommendations</h2>
+        {% for recommendation in recommendations %}
+            <div class="recommendation-item">
+                <p class="muted-text">{{ recommendation.created_at }}</p>
+                {% if recommendation.confidence_score is not none %}
+                    <div class="confidence-meter" aria-label="AI confidence">
+                        <div style="width: {{ (recommendation.confidence_score * 100)|round|int }}%;"></div>
+                    </div>
+                    <p class="confidence-label">Confidence: {{ (recommendation.confidence_score * 100)|round|int }}%</p>
+                {% endif %}
+                <p>{{ recommendation.recommended_text }}</p>
+                <p class="muted-text">Knowledge base: {{ recommendation.knowledge_title or "No linked solution" }}</p>
+            </div>
+        {% else %}
+            <p>No AI recommendation history yet.</p>
+        {% endfor %}
+    </article>
+</section>
+
+<section class="workspace single-column">
+    <article class="panel">
+        <p class="eyebrow">Week 5 Feedback</p>
+        <h2>Was the AI recommendation helpful?</h2>
+        <form class="search-form" action="{{ url_for('main.add_feedback', incident_id=incident.id) }}" method="post">
+            <label for="is_helpful">Result</label>
+            <select id="is_helpful" name="is_helpful" required>
+                <option value="">Select feedback</option>
+                <option value="1">Helpful</option>
+                <option value="0">Not helpful</option>
+            </select>
+
+            <label for="comments">Comments</label>
+            <textarea id="comments" name="comments" rows="4"></textarea>
+
+            <button type="submit">Save Feedback</button>
+        </form>
+
+        <div class="feedback-list">
+            {% for feedback in feedback_rows %}
+                <article class="feedback-item">
+                    <strong>{{ "Helpful" if feedback.is_helpful else "Not helpful" }}</strong>
+                    <p>{{ feedback.comments or "No comments." }}</p>
+                    <span>{{ feedback.created_at }}</span>
+                </article>
+            {% else %}
+                <p class="muted-text">No feedback recorded yet.</p>
+            {% endfor %}
+        </div>
+    </article>
+</section>
+{% endblock %}
