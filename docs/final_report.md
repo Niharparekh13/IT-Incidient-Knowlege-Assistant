@@ -28,6 +28,7 @@ The application provides a searchable IT knowledge base, incident tracking, and 
 - HTML/CSS: user interface
 - Git and GitHub: version control and collaboration
 - AI agent v1: local keyword and confidence scoring for recommendation ranking
+- Ollama/Llama: optional local LLM response generation when Ollama is running
 
 ## Scope
 
@@ -84,7 +85,7 @@ Week 2: Flask project skeleton, database schema, seed data, and GitHub repositor
 
 Week 3: Core CRUD and working user flow were added for incidents and knowledge base entries.
 
-Week 4: AI agent v1 was added. The app now ranks knowledge base solutions, shows confidence scores, records AI recommendations, and provides escalation guidance.
+Week 4: AI agent v1 was added. The app now ranks knowledge base solutions, shows confidence scores, records AI recommendations, provides escalation guidance, and optionally uses Ollama with a local Llama model to generate clearer troubleshooting responses.
 
 Week 5: Testing and refinement were added. The project includes a unittest suite that checks app routes, AI recommendations, incident CRUD, knowledge CRUD, and feedback flow.
 
@@ -93,6 +94,7 @@ Week 6: Final delivery materials were prepared, including this final report, pre
 ## Final Features
 
 - Search IT issue and receive AI-ranked recommendations
+- Optional Ollama/Llama generated troubleshooting text
 - View confidence score and matched terms
 - Save a recommendation as an incident
 - View incident details and AI recommendation history
@@ -121,6 +123,7 @@ The tests verify:
 
 - Main pages load successfully
 - AI agent returns relevant recommendations
+- Ollama prompt generation includes the user issue and knowledge base match
 - Search to incident to feedback flow works
 - Knowledge base CRUD works
 - Incident update and delete flow works
@@ -135,7 +138,7 @@ https://github.com/Niharparekh13/IT-Incidient-Knowlege-Assistant
 
 1. Open the home page.
 2. Search for `wifi not connecting`.
-3. Show the AI confidence score and matched recommendation.
+3. Show the AI provider, confidence score, and matched recommendation.
 4. Save the recommendation as an incident.
 5. Open the incident details page.
 6. Add feedback saying the recommendation was helpful.

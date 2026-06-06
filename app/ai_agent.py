@@ -1,5 +1,7 @@
 import re
 
+from .ollama_client import enhance_recommendation, get_settings
+
 
 STOP_WORDS = {
     "a",
@@ -130,6 +132,10 @@ def recommend_solutions(db, issue, category_id=None, limit=5):
             confidence,
             matched_terms,
         )
+        recommendation["ai_provider"] = "Local scoring agent"
+        recommendation["saved_ai_summary"] = (
+            f"{recommendation['ai_provider']}: {recommendation['ai_summary']}"
+        )
         ranked.append(recommendation)
 
     ranked.sort(
@@ -140,7 +146,23 @@ def recommend_solutions(db, issue, category_id=None, limit=5):
         ),
         reverse=True,
     )
-    return ranked[:limit]
+    recommendations = ranked[:limit]
+    enhance_with_ollama(issue, recommendations)
+    return recommendations
+
+
+def enhance_with_ollama(issue, recommendations):
+    max_enhancements = get_settings()["max_enhancements"]
+    for recommendation in recommendations[:max_enhancements]:
+        llm_response = enhance_recommendation(issue, recommendation)
+        if not llm_response:
+            continue
+
+        recommendation["ai_summary"] = llm_response["text"]
+        recommendation["ai_provider"] = llm_response["provider"]
+        recommendation["saved_ai_summary"] = (
+            f"{llm_response['provider']}: {llm_response['text']}"
+        )
 
 
 def build_escalation_message(issue, has_matches):

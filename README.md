@@ -25,6 +25,7 @@ Final Flask and SQLite prototype for an IT incident troubleshooting application.
 - Added confidence scores, matched terms, and escalation guidance.
 - Stored AI recommendations when incidents are created from search results.
 - Added an AI Activity dashboard.
+- Added optional Ollama/Llama support for local LLM-generated troubleshooting responses.
 
 ### Week 5
 
@@ -108,12 +109,44 @@ Run tests:
 python -m unittest discover -s tests
 ```
 
+## Optional Ollama/Llama Setup
+
+The app works without Ollama by using the built-in local scoring agent. To use a local Llama model, install Ollama and pull a small model:
+
+```powershell
+ollama pull llama3.2
+```
+
+Ollama normally serves a local API at:
+
+```text
+http://127.0.0.1:11434
+```
+
+Then run the Flask app as usual. When Ollama is running and the model is available, search results use Ollama to generate clearer troubleshooting recommendations. If Ollama is unavailable, the app automatically falls back to the local scoring agent.
+
+Optional environment variables:
+
+```powershell
+$env:OLLAMA_BASE_URL="http://127.0.0.1:11434"
+$env:OLLAMA_MODEL="llama3.2"
+$env:OLLAMA_TIMEOUT_SECONDS="1.5"
+$env:OLLAMA_MAX_ENHANCEMENTS="1"
+$env:OLLAMA_ENABLED="1"
+```
+
+To force fallback mode:
+
+```powershell
+$env:OLLAMA_ENABLED="0"
+```
+
 ## Final Demo Flow
 
 1. Open the home page.
 2. Type an issue such as `wifi not connecting` or `account locked`.
 3. Submit the issue and show AI-ranked troubleshooting recommendations.
-4. Point out the confidence score, matched terms, and escalation guidance.
+4. Point out the AI provider, confidence score, matched terms, and escalation guidance.
 5. Save one matching result as an incident.
 6. Open the incident details page and show the stored AI recommendation.
 7. Add helpful or not helpful feedback.

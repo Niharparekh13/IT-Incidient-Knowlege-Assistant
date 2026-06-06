@@ -23,6 +23,7 @@
                     <div style="width: {{ match.confidence_percent }}%;"></div>
                 </div>
                 <p class="confidence-label">AI confidence: {{ match.confidence_percent }}%</p>
+                <p class="muted-text">AI provider: {{ match.ai_provider }}</p>
                 {% if match.matched_terms %}
                     <p class="muted-text">Matched terms: {{ match.matched_terms }}</p>
                 {% endif %}
@@ -36,7 +37,7 @@
                     <input type="hidden" name="category_id" value="{{ match.category_id }}">
                     <input type="hidden" name="matched_kb_id" value="{{ match.id }}">
                     <input type="hidden" name="confidence_score" value="{{ match.confidence_score }}">
-                    <input type="hidden" name="recommended_text" value="{{ match.ai_summary }}">
+                    <input type="hidden" name="recommended_text" value="{{ match.saved_ai_summary }}">
                     <button type="submit">Save Incident with AI Recommendation</button>
                 </form>
             </article>

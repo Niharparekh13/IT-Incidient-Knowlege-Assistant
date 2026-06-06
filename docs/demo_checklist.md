@@ -23,18 +23,39 @@ http://127.0.0.1:5000/
 2. Show project structure in VS Code.
 3. Open `schema.sql` and explain the five tables.
 4. Open `app/ai_agent.py` and explain AI agent v1.
-5. Open the running app.
-6. Search `wifi not connecting`.
-7. Point out confidence score, matched terms, and escalation note.
-8. Save the recommendation as an incident.
-9. Open Incidents and then Details.
-10. Add feedback as Helpful.
-11. Open AI Activity dashboard.
-12. Edit the incident status to Resolved.
-13. Open Knowledge Base.
-14. Add or edit one knowledge base solution.
-15. Mention tests passed with `python -m unittest discover -s tests`.
+5. Open `app/ollama_client.py` and explain optional Ollama/Llama integration.
+6. Open the running app.
+7. Search `wifi not connecting`.
+8. Point out AI provider, confidence score, matched terms, and escalation note.
+9. Save the recommendation as an incident.
+10. Open Incidents and then Details.
+11. Add feedback as Helpful.
+12. Open AI Activity dashboard.
+13. Edit the incident status to Resolved.
+14. Open Knowledge Base.
+15. Add or edit one knowledge base solution.
+16. Mention tests passed with `python -m unittest discover -s tests`.
+
+## Optional Ollama Demo
+
+If Ollama is installed, run:
+
+```powershell
+ollama pull llama3.2
+```
+
+Then keep Ollama running and start Flask. The search results should show:
+
+```text
+AI provider: Ollama (llama3.2)
+```
+
+If Ollama is not running, the app still works and shows:
+
+```text
+AI provider: Local scoring agent
+```
 
 ## Short Speaking Script
 
-For our final project, we completed the IT Incident Knowledge Assistant. It is a Flask and SQLite application that helps users search for common IT issues and receive troubleshooting recommendations. The app includes CRUD for incidents and knowledge base entries, an AI agent v1 that ranks solutions with confidence scores, feedback tracking, automated tests, and final documentation.
+For our final project, we completed the IT Incident Knowledge Assistant. It is a Flask and SQLite application that helps users search for common IT issues and receive troubleshooting recommendations. The app includes CRUD for incidents and knowledge base entries, an AI agent v1 that ranks solutions with confidence scores, optional Ollama/Llama generated responses, feedback tracking, automated tests, and final documentation.

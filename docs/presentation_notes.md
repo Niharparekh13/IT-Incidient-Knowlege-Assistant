@@ -22,6 +22,7 @@ Our app gives users a web interface where they can enter an IT issue and receive
 - HTML/CSS for frontend
 - GitHub for version control
 - AI agent v1 for recommendation ranking
+- Ollama/Llama for optional local LLM-generated responses
 
 ## Slide 5: Architecture
 
@@ -43,7 +44,7 @@ Week 3 added core CRUD and a working user flow for incident management and knowl
 
 ## Slide 7: AI Agent v1
 
-The AI agent compares the user's issue against stored knowledge base entries. It ranks possible solutions using matched keywords, category hints, and issue wording. It then displays a confidence score, matched terms, and escalation guidance.
+The AI agent compares the user's issue against stored knowledge base entries. It ranks possible solutions using matched keywords, category hints, and issue wording. It then displays a confidence score, matched terms, and escalation guidance. If Ollama is running locally, the app sends the user issue and the matched knowledge base entry to a Llama model to generate a clearer troubleshooting response. If Ollama is unavailable, the app falls back to the local scoring agent.
 
 ## Slide 8: Testing and Refinement
 
@@ -54,7 +55,7 @@ We added automated tests using Python unittest. The tests check route loading, A
 Demo sequence:
 
 1. Search for an issue.
-2. Review the AI recommendation.
+2. Review the AI provider and recommendation.
 3. Save it as an incident.
 4. Open incident details.
 5. Add feedback.

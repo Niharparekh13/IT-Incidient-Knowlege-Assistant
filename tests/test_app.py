@@ -1,15 +1,19 @@
 import sqlite3
 import tempfile
 import unittest
+import os
 from pathlib import Path
 
 from app import create_app
 from app.ai_agent import recommend_solutions
 from app.db import get_db
+from app.ollama_client import build_prompt
 
 
 class IncidentAssistantTestCase(unittest.TestCase):
     def setUp(self):
+        self.original_ollama_enabled = os.environ.get("OLLAMA_ENABLED")
+        os.environ["OLLAMA_ENABLED"] = "0"
         self.temp_dir = tempfile.TemporaryDirectory()
         self.db_path = Path(self.temp_dir.name) / "test.sqlite"
         project_root = Path(__file__).resolve().parent.parent
@@ -25,6 +29,10 @@ class IncidentAssistantTestCase(unittest.TestCase):
         self.client = self.app.test_client()
 
     def tearDown(self):
+        if self.original_ollama_enabled is None:
+            os.environ.pop("OLLAMA_ENABLED", None)
+        else:
+            os.environ["OLLAMA_ENABLED"] = self.original_ollama_enabled
         self.temp_dir.cleanup()
 
     def test_homepage_and_management_pages_load(self):
@@ -39,6 +47,21 @@ class IncidentAssistantTestCase(unittest.TestCase):
         self.assertGreaterEqual(len(results), 1)
         self.assertIn("Wi-Fi", results[0]["category_name"])
         self.assertGreater(results[0]["confidence_score"], 0)
+        self.assertEqual(results[0]["ai_provider"], "Local scoring agent")
+
+    def test_ollama_prompt_uses_issue_and_knowledge_base_match(self):
+        entry = {
+            "category_name": "Network and Wi-Fi",
+            "title": "Cannot connect to Wi-Fi",
+            "symptoms": "cannot connect wifi wireless network authentication failed",
+            "resolution_steps": "Check that Wi-Fi is enabled and reconnect.",
+            "escalation_required": 0,
+        }
+        prompt = build_prompt("wifi not connecting", entry)
+
+        self.assertIn("wifi not connecting", prompt)
+        self.assertIn("Cannot connect to Wi-Fi", prompt)
+        self.assertIn("Use only the knowledge base", prompt)
 
     def test_search_save_incident_and_feedback_flow(self):
         search_response = self.client.post(
