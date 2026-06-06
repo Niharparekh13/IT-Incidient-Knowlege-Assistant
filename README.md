@@ -130,7 +130,7 @@ Optional environment variables:
 ```powershell
 $env:OLLAMA_BASE_URL="http://127.0.0.1:11434"
 $env:OLLAMA_MODEL="llama3.2"
-$env:OLLAMA_TIMEOUT_SECONDS="1.5"
+$env:OLLAMA_TIMEOUT_SECONDS="12"
 $env:OLLAMA_MAX_ENHANCEMENTS="1"
 $env:OLLAMA_ENABLED="1"
 ```

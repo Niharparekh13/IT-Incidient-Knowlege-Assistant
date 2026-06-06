@@ -8,7 +8,7 @@ import urllib.request
 
 DEFAULT_BASE_URL = "http://127.0.0.1:11434"
 DEFAULT_MODEL = "llama3.2"
-DEFAULT_TIMEOUT_SECONDS = 1.5
+DEFAULT_TIMEOUT_SECONDS = 12
 DEFAULT_MAX_ENHANCEMENTS = 1
 
 
@@ -27,7 +27,7 @@ def enhance_recommendation(issue, entry):
         "stream": False,
         "options": {
             "temperature": 0.2,
-            "num_predict": 180,
+            "num_predict": 120,
         },
     }
 
