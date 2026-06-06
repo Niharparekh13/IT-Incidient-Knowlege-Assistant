@@ -4,7 +4,7 @@
 
 {% block content %}
 <section class="results-header">
-    <p class="eyebrow">AI Agent v1</p>
+    <p class="eyebrow">AI Recommendation</p>
     <h1>{{ issue }}</h1>
     <p>{{ escalation_message }}</p>
     <div class="button-row">
@@ -16,8 +16,13 @@
 {% if matches %}
     <section class="result-grid">
         {% for match in matches %}
-            <article class="solution-card">
-                <span>{{ match.category_name }}</span>
+            <article class="solution-card result-card {% if loop.first %}top-result{% endif %}">
+                <div class="card-kicker">
+                    <span>{{ match.category_name }}</span>
+                    {% if loop.first %}
+                        <strong>Best match</strong>
+                    {% endif %}
+                </div>
                 <h2>{{ match.title }}</h2>
                 <div class="confidence-meter" aria-label="AI confidence {{ match.confidence_percent }} percent">
                     <div style="width: {{ match.confidence_percent }}%;"></div>
@@ -27,7 +32,9 @@
                 {% if match.matched_terms %}
                     <p class="muted-text">Matched terms: {{ match.matched_terms }}</p>
                 {% endif %}
+                <h3>Recommendation</h3>
                 <p>{{ match.ai_summary }}</p>
+                <h3>Troubleshooting steps</h3>
                 <p>{{ match.resolution_steps }}</p>
                 {% if match.escalation_required %}
                     <p class="status-pill">Escalation may be needed</p>
@@ -46,7 +53,6 @@
 {% else %}
     <section class="panel empty-state">
         <h2>No match found</h2>
-        <p>Create an incident so the team can review it and add a future knowledge base entry.</p>
         <form action="{{ url_for('main.incidents') }}" method="post">
             <input type="hidden" name="issue" value="{{ issue }}">
             <input type="hidden" name="category_id" value="{{ category_id }}">

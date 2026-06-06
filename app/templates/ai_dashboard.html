@@ -4,7 +4,7 @@
 
 {% block content %}
 <section class="page-title">
-    <p class="eyebrow">Week 4 AI Agent v1</p>
+    <p class="eyebrow">AI Activity</p>
     <h1>AI recommendation activity</h1>
 </section>
 
@@ -65,7 +65,12 @@
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="6">No AI recommendations saved yet. Search an issue and save an incident to create one.</td>
+                    <td colspan="6">
+                        <div class="empty-table">
+                            <strong>No AI recommendations saved yet.</strong>
+                            <a class="button-link" href="{{ url_for('main.index') }}">Search Issue</a>
+                        </div>
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>

@@ -48,14 +48,14 @@
                 <p class="muted-text">Knowledge base: {{ recommendation.knowledge_title or "No linked solution" }}</p>
             </div>
         {% else %}
-            <p>No AI recommendation history yet.</p>
+            <p class="muted-text">No AI recommendation history yet.</p>
         {% endfor %}
     </article>
 </section>
 
 <section class="workspace single-column">
     <article class="panel">
-        <p class="eyebrow">Week 5 Feedback</p>
+        <p class="eyebrow">Feedback</p>
         <h2>Was the AI recommendation helpful?</h2>
         <form class="search-form" action="{{ url_for('main.add_feedback', incident_id=incident.id) }}" method="post">
             <label for="is_helpful">Result</label>

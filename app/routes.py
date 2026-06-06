@@ -11,6 +11,24 @@ INCIDENT_STATUSES = ["new", "in_progress", "resolved", "escalated"]
 def index():
     db = get_db()
     categories = get_categories(db)
+    summary = db.execute(
+        """
+        SELECT
+            (SELECT COUNT(*) FROM knowledge_base) AS knowledge_count,
+            (SELECT COUNT(*) FROM incidents) AS incident_count,
+            (SELECT COUNT(*) FROM ai_recommendations) AS recommendation_count,
+            (SELECT COUNT(*) FROM feedback) AS feedback_count
+        """
+    ).fetchone()
+    recent_incidents = db.execute(
+        """
+        SELECT i.*, c.name AS category_name
+        FROM incidents i
+        LEFT JOIN categories c ON c.id = i.category_id
+        ORDER BY i.created_at DESC
+        LIMIT 4
+        """
+    ).fetchall()
     common_solutions = db.execute(
         """
         SELECT kb.*, c.name AS category_name
@@ -24,6 +42,8 @@ def index():
     return render_template(
         "index.html",
         categories=categories,
+        summary=summary,
+        recent_incidents=recent_incidents,
         common_solutions=common_solutions,
     )
 
@@ -109,8 +129,20 @@ def incidents():
         ORDER BY i.created_at DESC
         """
     ).fetchall()
+    status_counts = db.execute(
+        """
+        SELECT status, COUNT(*) AS total
+        FROM incidents
+        GROUP BY status
+        ORDER BY status
+        """
+    ).fetchall()
 
-    return render_template("incidents.html", incidents=incident_rows)
+    return render_template(
+        "incidents.html",
+        incidents=incident_rows,
+        status_counts=status_counts,
+    )
 
 
 @bp.route("/incidents/<int:incident_id>")

@@ -8,14 +8,16 @@
 </head>
 <body>
     <header class="app-header">
-        <a class="brand" href="{{ url_for('main.index') }}">IT Incident Knowledge Assistant</a>
+        <a class="brand" href="{{ url_for('main.index') }}">
+            <span class="brand-mark">IT</span>
+            <span>Incident Knowledge Assistant</span>
+        </a>
         <nav aria-label="Primary navigation">
-            <a href="{{ url_for('main.index') }}">Search</a>
+            <a href="{{ url_for('main.index') }}">Search Issue</a>
             <a href="{{ url_for('main.knowledge') }}">Knowledge Base</a>
-            <a href="{{ url_for('main.incidents') }}">Incidents</a>
+            <a href="{{ url_for('main.incidents') }}">Incident Queue</a>
             <a href="{{ url_for('main.ai_dashboard') }}">AI Activity</a>
-            <a href="{{ url_for('main.new_knowledge') }}">Add Knowledge</a>
-            <a href="{{ url_for('main.new_incident') }}">New Incident</a>
+            <a class="nav-action" href="{{ url_for('main.new_incident') }}">New Incident</a>
         </nav>
     </header>
 
